@@ -1,5 +1,7 @@
 import datetime as dt
 import glob
+from urllib import request
+import json
 import time
 from googlesearch import search
 import facebook as fb
@@ -76,12 +78,12 @@ def set_count(val):
 
 
 def save_description(text, link):
-    link = 'You can read more by clicking on this link: ' + link + '\n'
     description = text + link
     desc_path = g_.root + g_.folder_db + 'Description.txt'
     desc_content = open(desc_path, 'w', encoding='utf-8')
     desc_content.write(description)
     desc_content.close()
+    return description
 
 
 def get_description():
@@ -109,3 +111,35 @@ def get_suggested_link(specific_folder_name):
         return j
 
     return 0
+
+
+def create_link(specific_folder_name):
+    suggested_link = get_suggested_link(specific_folder_name)
+    confirm = input("Is this link correct? [Y/N] Link: " + suggested_link + " :")
+    if confirm == 'Y':
+        link = suggested_link
+    else:
+        link = input("Please enter the link: ").replace('\n', '')
+
+    if link != '':
+        analytics_param = '?utm_source=fb_page&utm_medium=social_media&utm_campaign=as_automate'
+        print(link)
+        link = link.replace(' ', '')
+        link = link + analytics_param
+        print(link)
+        link = shorten_link(link)
+        print(link)
+
+    return link
+
+
+def shorten_link(link):
+    print(link)
+    bitly_link = 'http://api.bitly.com/v3/shorten?login=o_51r4v9v39b&apiKey=R_7e968b93a19046989b917643a8d60401&longUrl='
+    link = bitly_link + link
+    print("goes in:"+ link)
+    response = request.urlopen(link)
+    a = json.loads(response.read())
+    link = a['data']['url']
+    print("Comes out: " + link)
+    return link

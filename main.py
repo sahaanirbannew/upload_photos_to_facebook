@@ -19,7 +19,7 @@ import glob
 # Setting time:
 ########################################################################################################################
 t1 = '5:30'
-t2 = '10:30'
+t2 = '14:50'
 t3 = '15:30'
 t4 = '22:30'
 
@@ -66,16 +66,9 @@ num_of_files = len(file_paths)
 ##################################################################
 if count == 0:
     text = input("Please enter description") + '\n'
-    suggested_link = f_.get_suggested_link(specific_folder_name)
-    confirm = input("Is this link correct? [Y/N] Link: " + suggested_link + " :")
-    if confirm == 'Y':
-        link = suggested_link
-    else:
-        link = input("Please enter the link: ")
-    link = 'You can read more by clicking on this link: ' + link + '\n'
-    disclaimer = '#automated #test\n'
-    description = text + link + disclaimer
-    f_.save_description(text, link)
+    link = f_.create_link(specific_folder_name)
+    # Saves the current description in local memory and in file.
+    description = f_.save_description(text, link)
 
 else:
     description = f_.get_description()
