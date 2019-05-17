@@ -14,10 +14,18 @@ import g_
 import f_
 import glob
 
+
+########################################################################################################################
+# Setting time:
+########################################################################################################################
 t1 = '5:30'
 t2 = '10:30'
 t3 = '15:30'
 t4 = '22:30'
+
+# This would soon be user input or data driven.
+selected_time = [t1, t2, t3, t4]
+########################################################################################################################
 
 ##################################################################
 # This is the count, the file number which needs to be uploaded.
@@ -27,12 +35,11 @@ t4 = '22:30'
 ##################################################################
 count = int(f_.get_count(), 10)
 
-
 ##################################################################
 # Prepares the FB graph for page.
 ##################################################################
-page_graph = f_.fb_page_graph_build(g_.page_id, g_.client_token) 
-profile_graph = f_.fb_user_profile_graph_build(g_.user_id, g_.user_token)
+page_graph = f_.fb_page_graph_build(g_.page_id, g_.client_token)
+profile_graph = f_.fb_user_profile_graph_build(g_.user_id, g_.user_token) #This has errors
 ##################################################################
 
 ##################################################################
@@ -78,33 +85,14 @@ if count == -1:
     count = 0
 ##################################################################
 ##################################################################
-# For the sake of moner shanti: #experiments
 print("Current count: " + str(count))
 print("Next file: " + file_paths[count])
 ##################################################################
-#The time part will change.
+
 while count < num_of_files:
-    file = file_paths[count]
-    time1 = dt.datetime.now()
-    if str(time1.hour) == '11' and str(time1.minute) == '53':
-        print("Count: " + str(count))
-        print("Next photo: " + file)
-        count = f_.fb_page_post_image(file, profile_graph, description, count)
-    if str(time1.hour) == '5' and str(time1.minute) == '30':
-        print("Count: " + str(count))
-        print("Next photo: " + file)
-        count = f_.fb_page_post_image(file, page_graph, description, count)
-    if str(time1.hour) == '10' and str(time1.minute) == '58':
-        print("Count: " + str(count))
-        print("Next photo: " + file)
-        count = f_.fb_page_post_image(file, page_graph, description, count)
-    if str(time1.hour) == '15' and str(time1.minute) == '0':
-        print("Count: " + str(count))
-        print("Next photo: " + file)
-        count = f_.fb_page_post_image(file, page_graph, description, count)
-    if str(time1.hour) == '22' and str(time1.minute) == '0':
-        print("Count: " + str(count))
-        print("Next photo: " + file)
+    curr_time = str(dt.datetime.now().hour)+":"+str(dt.datetime.now().minute)
+    if curr_time in selected_time:
+        file = file_paths[count]
         count = f_.fb_page_post_image(file, page_graph, description, count)
 
 ##################################################################
