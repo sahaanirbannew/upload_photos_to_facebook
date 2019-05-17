@@ -13,7 +13,7 @@ I export to a folder "../LightRoomEdits" and it is my standard practise for the 
 I name the folders based on what the event is about. Example: "../LightRoomEdits/walpurgisnacht"<br> 
 The folder has all the photographs. 
 <br><br>
-What does the program do?<br> , 
+What does the program do?<br>
 It builds the Facebook social graph for the page id using the access.
 At different points in time, which is predecised, it uploads one photograph. <br>
 <br><br>
