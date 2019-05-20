@@ -20,7 +20,7 @@ At different points in time, which is predecised, it uploads one photograph. <br
 Future work:<br>
 a. Write some program (I do not know what/how) that will run this python code each time my laptop starts.<br>
 b. Currently I have a "suggested link" option. Based on the folder name, it tries to search for the most relevant blog post on my blog. <br> We can make this suggesting option more interesting. <br>
-c. Since I'm lazy, we can try and automate the description of the photograph as well.<br> 
+c. Description of the photograph is automated. But it needs developments!<br> 
 <br>
 Maybe future work: <br>
 a. Upload to Personal profile! (because if I log in, I waste a lot of time. And there are around 4000 friends and 4500+ subscribers). So some amount of people should go to my blog! <br> 
