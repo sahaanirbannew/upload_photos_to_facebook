@@ -6,6 +6,12 @@ import time
 from googlesearch import search
 import facebook as fb
 import g_
+from tkinter.filedialog import askdirectory
+
+
+def get_folder_name():
+    folder = askdirectory(initialdir=g_.root, title='Please select a directory')
+    return folder
 
 
 def fb_page_graph_build(page_id, client_token):
@@ -78,6 +84,8 @@ def set_count(val):
 
 
 def save_description(text, link):
+    if link.replace(' ', '') != '':
+        link = '\nRead more at: ' + link
     description = text + link
     desc_path = g_.root + g_.folder_db + 'Description.txt'
     desc_content = open(desc_path, 'w', encoding='utf-8')
@@ -88,7 +96,8 @@ def save_description(text, link):
 
 def get_description():
     desc_path = g_.root + g_.folder_db + 'Description.txt'
-    desc_content = open(desc_path, 'r')
+    print(desc_path)
+    desc_content = open(desc_path, 'r', encoding='utf-8')
     return desc_content.read()
 
 
@@ -106,7 +115,9 @@ def get_foldname():
 
 
 def get_suggested_link(specific_folder_name):
-    query = specific_folder_name + ' + anirbansaha'
+    searchterm = str(specific_folder_name).replace(g_.root, '')
+    searchterm = searchterm.replace('/', '')
+    query = searchterm + ' + anirbansaha'
     for j in search(query, tld="com", num=1, stop=1, pause=10):
         return j
 
@@ -122,24 +133,17 @@ def create_link(specific_folder_name):
         link = input("Please enter the link: ").replace('\n', '')
 
     if link != '':
-        analytics_param = '?utm_source=fb_page&utm_medium=social_media&utm_campaign=as_automate'
-        print(link)
+        analytics_param = '?utm_campaign=as_automate'
         link = link.replace(' ', '')
         link = link + analytics_param
-        print(link)
         link = shorten_link(link)
-        print(link)
-
     return link
 
 
 def shorten_link(link):
-    print(link)
     bitly_link = 'http://api.bitly.com/v3/shorten?login=o_51r4v9v39b&apiKey=R_7e968b93a19046989b917643a8d60401&longUrl='
     link = bitly_link + link
-    print("goes in:"+ link)
     response = request.urlopen(link)
     a = json.loads(response.read())
     link = a['data']['url']
-    print("Comes out: " + link)
     return link
