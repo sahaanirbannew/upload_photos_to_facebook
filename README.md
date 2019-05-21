@@ -14,8 +14,15 @@ I name the folders based on what the event is about. Example: "../LightRoomEdits
 The folder has all the photographs. 
 <br><br>
 What does the program do?<br>
-It builds the Facebook social graph for the page id using the access.
-At different points in time, which is predecised, it uploads one photograph. <br>
+Task A: It asks the user (only me) to choose a folder.<br>
+Task B: It tries to suggest which link (from anirbansaha.com) should go with the photographs. <br>
+Task B.a: Asks for confirmation. If confirmed, it creates the Bit.ly link to track clicks. <br>
+Task B.b: If suggested link fails, it asks the user to give the link explicitly.<br>
+Task C: It tries to summarise the blog post content in a few words. <br> 
+Task C.a: Asks for confirmation. If confirmed, it saves the description along with the link. <br>
+Task C.b: Else it asks the user to give the description.<br>
+Task D: Once agreed upon, it starts uploading the images to my FB page at 5:30 hours, 10:30 hours, 15:30 hours, 20:00 hours German time. (Indian time = German time + 3.5 hours) <br>
+Task E: Saves the settings in file system, which the otherwise non technical or lazy me can open and see. <br>
 <br><br>
 Future work:<br>
 a. Write some program (I do not know what/how) that will run this python code each time my laptop starts.<br>
