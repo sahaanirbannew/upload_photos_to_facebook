@@ -1,33 +1,32 @@
 ########################################################################################################################
-# This program takes photographs from a folder
-# and posts it on fb.com/anirbansahablog.
+# Improvements on previous version main_1.py
+# What version 1.000 did:
+#   It took one folder as an input. It uploaded photographs from that one folder at every point in time.
+# What does version 1.001 do?
+#   a. First "sequence.py" is executed:
+#       i. Takes more than one folder as input.
+#      ii. Creates two files:
+#           > folder_rec.csv
+#               Contains the following fields: folder_no | folder_path | long_link | bit.ly_link
+#           > schedule.csv
+#               Contains the following fields: number | folder_no | file_path
+#               The files are arranged randomly.
+#   b. Then "main.py" is executed:
+#       i. Takes the file_path from the schedule.csv
+#      ii. Fetches long link and bit.ly link from folder_rec.csv
+#     iii. Creates description using the long link. Adds the bit.ly link to description.
+#      iv. Uploads the photograph with description to Facebook page.
 # Developer: Anirban Saha.
 ########################################################################################################################
 # Version   Status  Date        Comments
-#   0.001   Draft   14.05.2019  Just uploads the images
-#   0.002   Draft   16.05.2019  Asks for user input; Saves the last upload details.
-#   0.003   Draft   20.05.2019  Testing done; added dialog box, text summariser.
+#   1.001   Draft   23.05.2019  Added sequencer, randomises description to an extent, uploads it.
 ########################################################################################################################
 
-import facebook as fb
-import datetime as dt
 import g_
 import f_
-import glob
+import pandas as DataFrame
 import scrape
-
-
-########################################################################################################################
-# Setting time:
-########################################################################################################################
-t1 = '5:30'
-t2 = '10:30'
-t3 = '15:30'
-t4 = '20:0'
-
-# This would soon be user input or data driven.
-selected_time = [t1, t2, t3, t4]
-########################################################################################################################
+import datetime as dt
 
 ##################################################################
 # This is the count, the file number which needs to be uploaded.
@@ -36,69 +35,58 @@ selected_time = [t1, t2, t3, t4]
 # Count > 0  | Upload has started and interrupted midway.
 ##################################################################
 count = int(f_.get_count(), 10)
-
+print(count)
 ##################################################################
 # Prepares the FB graph for page.
 ##################################################################
 page_graph = f_.fb_page_graph_build(g_.page_id, g_.client_token)
-##################################################################
 
 ##################################################################
-# Finds Folder details
+# Fetches data from :
+#   a.  the database where the chosen folder details are saved.
+#   b.  the database where the files are sequenced and stored.
 ##################################################################
-#folder_path = g_.root
-if count == 0:
-    specific_folder_name = f_.get_folder_name()
-    specific_folder_name = specific_folder_name + '/'
-    f_.save_foldname(specific_folder_name)
-    f_.set_count(-1)
-else:
-    specific_folder_name = f_.get_foldname()
+sequence_path = g_.root + g_.folder_db + 'schedule.csv'
+folder_path = g_.root + g_.folder_db + 'folder_rec.csv'
+folder_db_details = open(folder_path, 'r', encoding='utf-8')
+sequence_db_details = open(sequence_path, 'r', encoding='utf-8')
+folder_db = DataFrame.read_csv(folder_path)
+sequence_db = DataFrame.read_csv(sequence_path)
 
 ##################################################################
-# Finds file details
+# Final count of the number of files in the pipeline.
 ##################################################################
-file_paths = glob.glob(specific_folder_name + "*.jpg") + glob.glob(specific_folder_name + "*.png")
-num_of_files = len(file_paths)
-
-##################################################################
-# Creates description
-# This should be automated.
-##################################################################
-if count == 0:
-
-    link = f_.create_link(specific_folder_name)
-    text = scrape.get_summary_description(link)
-    print(text)
-    confirm = input("Is the description correct?")
-    if confirm != 'Y':
-        text = input("Please enter description") + '\n'
-
-    # Saves the current description in local memory and in file.
-    description = f_.save_description(text, link)
-
-else:
-    description = f_.get_description()
+final_count = sequence_db.size
 
 ##################################################################
 if count == -1:
     count = 0
 ##################################################################
-##################################################################
-print("Current count: " + str(count) + '/' + str(num_of_files))
-print("Next file: " + file_paths[count])
-##################################################################
 
-while count < num_of_files:
-    curr_time = str(dt.datetime.now().hour)+":"+str(dt.datetime.now().minute)
-    if curr_time in selected_time:
-        file = file_paths[count]
-        print("Uploading ..." + str(count) + '/' + str(num_of_files))
-        count = f_.fb_page_post_image(file, page_graph, description, count)
+##################################################################
+# This is the main block.
+# This does the following steps:
+#   a. Get the next file to upload [from sequence_db]
+#   b. Finds which folder it is from [from sequence_db]
+#   c. Fetches the link and the shortened link [from folder_db]
+#   d. Fetches a description randomly created from blog post.
+#   e. Uploads to the Facebook page.
+##################################################################
+while count < final_count:
+    curr_time = str(dt.datetime.now().hour) + ":" + str(dt.datetime.now().minute)
+    if curr_time in g_.selected_fb_time:
+        file_path = str(sequence_db.loc[count, 'file_path'])
+        folder_no = str(sequence_db.loc[count, 'folder_no'])
+        rows = folder_db.loc[folder_db['folder_no'] == int(folder_no)]
+        link = rows.iloc[0]['link']
+        short_link = rows.iloc[0]['short_link']
+        description = scrape.get_summary_description(link)
+        description = description + " Check out more at " + short_link
+        count = f_.fb_page_post_image(file_path, page_graph, description, count)
 
 ##################################################################
 # Terminating condition.
 ##################################################################
-if count == num_of_files:
+if count == final_count:
     print("Finishing execution.")
     f_.reset_count()

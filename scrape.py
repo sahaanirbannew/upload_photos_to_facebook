@@ -6,7 +6,7 @@ import random
 
 def get_summary_description(link):
     text = get_text_from_link(link)
-    x = random.randint(45, 85)
+    x = random.randint(35, 100)
     desc = summarize(text, word_count=x)
     return desc
 

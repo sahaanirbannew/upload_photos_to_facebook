@@ -1,5 +1,4 @@
 import datetime as dt
-import glob
 from urllib import request
 import json
 import time
@@ -97,7 +96,7 @@ def save_description(text, link):
 def get_description():
     desc_path = g_.root + g_.folder_db + 'Description.txt'
     print(desc_path)
-    desc_content = open(desc_path, 'r', encoding='utf-8')
+    desc_content = open(desc_path, 'r')
     return desc_content.read()
 
 
@@ -127,7 +126,7 @@ def get_suggested_link(specific_folder_name):
 def create_link(specific_folder_name):
     suggested_link = get_suggested_link(specific_folder_name)
     confirm = input("Is this link correct? [Y/N] Link: " + suggested_link + " :")
-    if confirm == 'Y':
+    if confirm in g_.yes:
         link = suggested_link
     else:
         link = input("Please enter the link: ").replace('\n', '')
@@ -136,7 +135,7 @@ def create_link(specific_folder_name):
         analytics_param = '?utm_campaign=as_automate'
         link = link.replace(' ', '')
         link = link + analytics_param
-        link = shorten_link(link)
+        #link = shorten_link(link)
     return link
 
 
