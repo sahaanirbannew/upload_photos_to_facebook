@@ -20,13 +20,15 @@
 ########################################################################################################################
 # Version   Status  Date        Comments
 #   1.001   Draft   23.05.2019  Added sequencer, randomises description to an extent, uploads it.
+#   1.002   Draft   23.05.2019  Files upload to Twitter once a day.
 ########################################################################################################################
 
 import g_
 import f_
 import pandas as DataFrame
-import scrape
+import summarise
 import datetime as dt
+import upload_twitter
 
 ##################################################################
 # This is the count, the file number which needs to be uploaded.
@@ -36,10 +38,6 @@ import datetime as dt
 ##################################################################
 count = int(f_.get_count(), 10)
 print(count)
-##################################################################
-# Prepares the FB graph for page.
-##################################################################
-page_graph = f_.fb_page_graph_build(g_.page_id, g_.client_token)
 
 ##################################################################
 # Fetches data from :
@@ -80,9 +78,21 @@ while count < final_count:
         rows = folder_db.loc[folder_db['folder_no'] == int(folder_no)]
         link = rows.iloc[0]['link']
         short_link = rows.iloc[0]['short_link']
-        description = scrape.get_summary_description(link)
+        description = summarise.get_summary_description(link, 'fb')
         description = description + " Check out more at " + short_link
+        page_graph = f_.fb_page_graph_build(g_.page_id, g_.client_token)
         count = f_.fb_page_post_image(file_path, page_graph, description, count)
+
+    if curr_time in g_.selected_tw_time:
+        file_path = str(sequence_db.loc[count, 'file_path'])
+        folder_no = str(sequence_db.loc[count, 'folder_no'])
+        rows = folder_db.loc[folder_db['folder_no'] == int(folder_no)]
+        link = rows.iloc[0]['link']
+        short_link = rows.iloc[0]['short_link']
+        description = summarise.get_summary_description(link, 'tw')
+        description = description + " Check out more at " + short_link
+        description = description + '\n#photographoftheday #photography #traveller'
+        done = upload_twitter.upload(file_path, description)
 
 ##################################################################
 # Terminating condition.

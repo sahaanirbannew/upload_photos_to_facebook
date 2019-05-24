@@ -1,3 +1,6 @@
+# This page is a support to sequence.py
+
+
 import g_
 import f_
 import random

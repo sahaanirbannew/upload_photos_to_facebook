@@ -15,7 +15,7 @@ import datetime as dt
 import g_
 import f_
 import glob
-import scrape
+import summarise
 
 
 ########################################################################################################################
@@ -68,7 +68,7 @@ num_of_files = len(file_paths)
 if count == 0:
 
     link = f_.create_link(specific_folder_name)
-    text = scrape.get_summary_description(link)
+    text = summarise.get_summary_description(link)
     print(text)
     confirm = input("Is the description correct?")
     if confirm != 'Y':
