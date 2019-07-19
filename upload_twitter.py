@@ -6,8 +6,8 @@ import datetime as dt
 def upload(file, description):
     print("Entered Twitter.")
     api_key = 'rGOeSdg0myCTnIW4TX7pZv9Wo'
-    app_secret = 'TIi91jacTbdbTP9nBWb0kQBEUJIQp9tIMNUiCcxptrGxIwQoYk'
-    access_token = '39085479-GVWUkFdCdnFv1z4sgrq6DcuRQWIg1lgFtOmaexYsF'
+    app_secret = 'TIi91jacTbdbTP9nBEUJIQp9tIMNUiCcxptrGxIwQoYk'
+    access_token = '39085479-GVWUkFv1z4sgrq6DcuRQWIg1lgFtOmaexYsF'
     access_token_secret = 'WXsvkhm78eOfpzDPZBKkBFfU1Z0I1Ulm4O3mZaQ2ku5On'
 
     my_auth = OAuth(token=access_token,
